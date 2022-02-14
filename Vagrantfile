@@ -1,4 +1,4 @@
-WEB_NBR = 1
+WEB_NBR = 2
 IMAGE_NAME = "debian/buster64"
 NODE_NETWORK_BASE = "10.10.1"
 
@@ -49,3 +49,5 @@ Vagrant.configure("2") do |config|
   end
 
 end
+
+
