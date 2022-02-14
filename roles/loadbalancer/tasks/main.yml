@@ -1,0 +1,25 @@
+---
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: yes
+
+- name: Install required software
+  apt:
+    pkg:
+    - haproxy
+  become: yes
+  
+- name: Configure haproxy on layer 7
+  blockinfile:
+    path: /etc/haproxy/haproxy.cfg
+    block: |
+        frontend http_front
+           bind 10.10.1.10:80
+           default_backend http_back
+        backend http_back
+           balance roundrobin
+           server web1 10.10.1.11:80 check
+           server web2 10.10.1.12:80 check
+  notify: 
+    - restart haproxy
+  become: yes

@@ -1,0 +1,14 @@
+- hosts: loadbalancer
+  become: yes
+  roles:
+    - { role: loadbalancer }
+    
+- hosts: database
+  become: yes
+  roles:
+     - { role: mysql }
+
+- hosts: web
+  become: yes
+  roles:
+    - { role: apache }
