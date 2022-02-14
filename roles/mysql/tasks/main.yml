@@ -1,7 +1,4 @@
 ---
-- name: Update apt cache
-  apt: update_cache=yes cache_valid_time=3600
-  become: yes
 
 - name: create docker group
   become: true
@@ -70,6 +67,8 @@
   docker_container:
     name: mysql
     image: mysql
+    tty: yes
+    command: bash
     env:
       MYSQL_ROOT_PASSWORD: vagrant
       DB_HOST: 10.10.1.9
