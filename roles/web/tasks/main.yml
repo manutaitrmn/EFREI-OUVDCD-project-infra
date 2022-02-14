@@ -1,32 +1,98 @@
 ---
 
-- name: Install git & python3
+- name: create docker group
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: add user to group 
+  become: true
+  user:
+    name: "{{ansible_user}}"
+    groups: docker
+    append: true
+
+- name: install packages required by docker
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gpg-agent
+    - software-properties-common
+
+- name: add docker GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: add docker apt repo
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/debian buster stable
+    state: present
+
+- name: install docker
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+##### setup ansible <---> docker
+
+- name: Install python dependencies
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name: python3-pip
+
+- name: install 'Docker SDK for Python'
+  pip:
+    name: docker
+
+- name: Install git
   become: true
   apt:
     update_cache: yes
     state: latest
     name:
     - git
-    - python3-pip
-
-- name: Install setuptools module and force upgrade
-  pip: 
-    name: setuptools
-    extra_args: --upgrade
 
 - name: Clone FastAPI repo
   git:
     repo: 'https://github.com/manutaitrmn/devops-project-fastapi.git'
-    dest: /devops-project-fastapi
+    dest: /code
     clone: yes
     update: yes
 
-- name: Install specified python requirements
-  pip:
-    requirements: /devops-project-fastapi/requirements.txt
+- name: Build the image
+  docker_image:
+    build:
+      path: /code
+    name: fastapi-app
+    tag: v1
+    push: yes
+    source: build
 
-- name: Run the hypercorn server
-  become: true
-  shell: hypercorn main:app --bind 0.0.0.0:80 </dev/null >/dev/null 2>&1 &
-  args:
-    chdir: /devops-project-fastapi/
+#- name: Run mysql
+#  docker_container:
+#    name: mysql
+#    image: mysql
+#    tty: yes
+#    command: bash
+#    env:
+#      MYSQL_ROOT_PASSWORD: vagrant
+#      DB_HOST: 10.10.1.9
+#      DB_USER: user
+#      DB_PASSWORD: vagrant
+#  become: yes
