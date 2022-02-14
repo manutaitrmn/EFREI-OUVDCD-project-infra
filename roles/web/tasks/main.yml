@@ -12,6 +12,7 @@
   pip:
     name: 
       - uvicorn[standard]
+      - python3-pip
 
 - name: Clone FastAPI repo
   git:
