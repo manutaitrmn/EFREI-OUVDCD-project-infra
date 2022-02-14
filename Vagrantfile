@@ -10,6 +10,10 @@ Vagrant.configure("2") do |config|
     database.vm.box = IMAGE_NAME
     database.vm.hostname = "database"
     database.vm.network "private_network", ip: "#{NODE_NETWORK_BASE}.9"
+    database.vm.provision "ansible" do |ansible|
+      ansible.verbose = true
+      ansible.playbook = "roles/main.yml"
+      ansible.groups = {"database" => ["database"]}
   end
   
   # Loadbalancing VM 
@@ -17,6 +21,10 @@ Vagrant.configure("2") do |config|
     loadbalancer.vm.box = IMAGE_NAME
     loadbalancer.vm.hostname = "loadbalancer"
     loadbalancer.vm.network "private_network", ip: "#{NODE_NETWORK_BASE}.10"
+    loadbalancer.vm.provision "ansible" do |ansible|
+      ansible.verbose = true
+      ansible.playbook = "roles/main.yml"
+      ansible.groups = {"loadbalancer" => ["loadbalancer"]}
   end
 
   (1..WEB_NBR).each do |i|
@@ -27,23 +35,28 @@ Vagrant.configure("2") do |config|
       web.vm.network "private_network", ip: "#{NODE_NETWORK_BASE}.#{i + 10}"
       web.vm.hostname = "web#{i}"
 
-      # Enable X Forwarding
-      web.ssh.forward_agent = true
-      web.ssh.forward_x11 = true
+      web.vm.provision "ansible" do |ansible|
+        ansible.verbose = true
+        ansible.playbook = "roles/main.yml"
+        ansible.groups = {"web" => ["web"]}
+        ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3"}
 
+      # Enable X Forwarding
+      #web.ssh.forward_agent = true
+      #web.ssh.forward_x11 = true
     end
   end
   
   # Ansible playbook & hosts
-  config.vm.provision "ansible" do |ansible|
-    ansible.verbose = "v"
-    ansible.playbook = "roles/main.yml"
-    ansible.groups = {
-      "database" => ["database"],
-      "loadbalancer" => ["loadbalancer"],
-      "web" => ["web[1:#{WEB_NBR}]"]
-      #"web:vars" => {"ansible_python_interpreter" => "usr/bin/python3"}
-    }
-    #ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3" }
-  end
+  #config.vm.provision "ansible" do |ansible|
+  #  ansible.verbose = true
+  #  ansible.playbook = "roles/main.yml"
+  #  ansible.groups = {
+  #    "database" => ["database"],
+  #    "loadbalancer" => ["loadbalancer"],
+  #    "web" => ["web[1:#{WEB_NBR}]"]
+  #    #"web:vars" => {"ansible_python_interpreter" => "usr/bin/python3"}
+  #  }
+    #ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3"}
+  #end
 end
