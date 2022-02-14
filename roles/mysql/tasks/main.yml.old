@@ -1,0 +1,46 @@
+---
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: yes
+
+- name: Install required software
+  apt:
+    pkg:
+    - mariadb-server
+    - python-mysqldb
+    - python3-pymysql
+  become: yes
+
+- name: Create mysql database
+  mysql_db:
+    name: 'apache'
+    state: present
+  become: yes
+
+- name: Create mysql user web
+  mysql_user:
+    name: 'web'
+    password: 'vagrant'
+    priv: '*.*:ALL,GRANT'
+    host: '10.10.1.11'
+    state: present
+  become: yes
+
+- name: Create mysql user web 2
+  mysql_user:
+    name: 'web'
+    password: 'vagrant'
+    priv: '*.*:ALL,GRANT'
+    host: '10.10.1.12'
+    state: present
+  become: yes
+
+- name: Make mysql server listen on all interfaces
+  blockinfile:
+    path: /etc/mysql/my.cnf
+    block: |
+      [mysqld]
+      bind-address = *
+  notify: 
+    - restart mysql
+  become: yes
