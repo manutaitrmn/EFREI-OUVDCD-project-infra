@@ -1,0 +1,76 @@
+- name: create docker group
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: add user to group 
+  become: true
+  user:
+    name: "{{ansible_user}}"
+    groups: docker
+    append: true
+
+- meta: reset_connection   
+
+- name: install packages required by docker
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gpg-agent
+    - software-properties-common
+    - default-mysql-client
+
+- name: add docker GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: add docker apt repo
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/debian buster stable
+    state: present
+
+- name: install docker
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+##### setup ansible <---> docker
+
+- name: install python dependencies
+  become: true
+  apt:
+    update_cache: yes
+    state: latest
+    name: python3-pip
+
+- name: install 'Docker SDK for Python'
+  #become: true               <--- DO NOT DO THIS!!!
+  pip:
+    name: docker
+
+#- name: Run mysql
+#  docker_container:
+#    name: mysql
+#    image: mysql
+#    tty: yes
+#    command: bash
+#    env:
+#      MYSQL_ROOT_PASSWORD: vagrant
+#      DB_HOST: 10.10.1.9
+#      DB_USER: user
+#      DB_PASSWORD: vagrant
+#  become: yes
