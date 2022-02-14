@@ -1,6 +1,6 @@
 ---
 
-- name: install git
+- name: Install git & python3
   become: true
   apt:
     update_cache: yes
@@ -9,9 +9,14 @@
     - git
     - python3-pip
 
+- name: Install setup tools and force upgrade
+  pip: 
+    name: setuptools
+    extra_args: --upgrade
+
 - name: Install uvicorn server
   pip:
-    name: 
+    name:
       - uvicorn[standard]
 
 - name: Clone FastAPI repo
