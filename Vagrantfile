@@ -41,8 +41,8 @@ Vagrant.configure("2") do |config|
     ansible.groups = {
       "database" => ["database"],
       "loadbalancer" => ["loadbalancer"],
-      "web" => ["web[1:#{WEB_NBR}]"],
-      "web:vars" => {"ansible_python_interpreter" => "usr/bin/python3"}
+      "web" => ["web[1:#{WEB_NBR}]"]
+      #"web:vars" => {"ansible_python_interpreter" => "usr/bin/python3"}
     }
     #ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3" }
   end
