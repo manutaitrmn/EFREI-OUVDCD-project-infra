@@ -8,6 +8,12 @@
     name:
     - git
 
+- name: Install uvicorn server
+  pip:
+    name: 
+      - uvicorn[standard]
+      - setuptools
+
 - name: Clone FastAPI repo
   git:
     repo: 'https://github.com/manutaitrmn/devops-project-fastapi.git'
@@ -18,10 +24,6 @@
 - name: Install specified python requirements
   pip:
     requirements: /devops-project-fastapi/requirements.txt
-
-- name: Install uvicorn server
-  pip:
-    name: uvicorn[standard]
 
 - name: Run the uvicorn server
   command: uvicorn /devops-project-fastapi/main:app --host 0.0.0.0 --port 80
