@@ -3,11 +3,19 @@
   apt: update_cache=yes cache_valid_time=3600
   become: yes
 
-- name: Install required software
+- name: Install packages
   apt:
     pkg:
-    - apache2
-    - php
-    - php-mysql
     - default-mysql-client
+    - python3-pip
+    - python3-dev
   become: yes
+
+- name: Set environment variables
+  environment:
+    DB_HOST: 10.10.1.9
+    DB_USER: web
+    DB_PASSWORD: vagrant
+
+- name: Install Docker
+  ansible.builtin.shell: cd ~ && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh

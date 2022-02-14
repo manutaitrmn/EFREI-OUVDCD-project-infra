@@ -21,21 +21,13 @@
     name: 'web'
     password: 'vagrant'
     priv: '*.*:ALL,GRANT'
-    state: present
-  become: yes
-    
-- name: Create mysql user web1
-  mysql_user:
-    name: 'web1'
-    password: 'vagrant'
-    priv: '*.*:ALL,GRANT'
     host: '10.10.1.11'
     state: present
   become: yes
-  
-- name: Create mysql user web2
+
+- name: Create mysql user web 2
   mysql_user:
-    name: 'web2'
+    name: 'web'
     password: 'vagrant'
     priv: '*.*:ALL,GRANT'
     host: '10.10.1.12'
