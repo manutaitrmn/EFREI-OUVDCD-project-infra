@@ -26,4 +26,7 @@
     requirements: /devops-project-fastapi/requirements.txt
 
 - name: Run the hypercorn server
-  shell: sudo hypercorn /devops-project-fastapi/main:app --bind 0.0.0.0:80 </dev/null >/dev/null 2>&1 &
+  become: true
+  shell: hypercorn main:app --bind 0.0.0.0:80 </dev/null >/dev/null 2>&1 &
+  args:
+    chdir: /devops-project-fastapi/
