@@ -8,6 +8,7 @@
     pkg:
     - mariadb-server
     - python-mysqldb
+    - python3-pymysql
   become: yes
 
 - name: Create mysql database
