@@ -14,3 +14,14 @@
 - name: Install Docker
   shell: cd ~ && curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh
   become: yes
+
+- name: Run httpd
+  docker_container:
+    name: httpd
+    image: httpd
+    env:
+      DB_HOST: 10.10.1.9
+      DB_USER: "user"
+      DB_PASSWORD: "vagrant"
+  become: yes
+
