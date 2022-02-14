@@ -81,18 +81,9 @@
       path: /code
     name: fastapi-app
     tag: v1
-    push: yes
     source: build
 
-#- name: Run mysql
-#  docker_container:
-#    name: mysql
-#    image: mysql
-#    tty: yes
-#    command: bash
-#    env:
-#      MYSQL_ROOT_PASSWORD: vagrant
-#      DB_HOST: 10.10.1.9
-#      DB_USER: user
-#      DB_PASSWORD: vagrant
-#  become: yes
+- name: Run FastAPI from the generated image
+  docker_container:
+    name: fastapi
+    image: fastapi-app:v1
