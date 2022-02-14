@@ -1,77 +1,45 @@
 ---
 
-- name: create docker group
-  become: true
-  group:
-    name: docker
-    state: present
-
-- name: add user to group 
-  become: true
-  user:
-    name: "{{ansible_user}}"
-    groups: docker
-    append: true
-
-- meta: reset_connection   
-
-- name: install packages required by docker
+- name: Install required software
   become: true
   apt:
     update_cache: yes
     state: latest
     name:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gpg-agent
-    - software-properties-common
+    - mariadb-server
+    - python-mysqldb
+    - python3-pymysql
 
-- name: add docker GPG key
-  become: true
-  apt_key:
-    url: https://download.docker.com/linux/debian/gpg
+- name: Create mysql database
+  mysql_db:
+    name: 'apache'
     state: present
-
-- name: add docker apt repo
-  become: true
-  apt_repository:
-    repo: deb https://download.docker.com/linux/debian buster stable
-    state: present
-
-- name: install docker
-  become: true
-  apt:
-    update_cache: yes
-    state: latest
-    name:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
-
-##### setup ansible <---> docker
-
-- name: install python dependencies
-  become: true
-  apt:
-    update_cache: yes
-    state: latest
-    name: python3-pip
-
-- name: install 'Docker SDK for Python'
-  #become: true               <--- DO NOT DO THIS!!!
-  pip:
-    name: docker
-
-- name: Run mysql
-  docker_container:
-    name: mysql
-    image: mysql
-    tty: yes
-    command: bash
-    env:
-      MYSQL_ROOT_PASSWORD: vagrant
-      DB_HOST: 10.10.1.9
-      DB_USER: user
-      DB_PASSWORD: vagrant
   become: yes
+
+- name: Create mysql user web
+  become: true
+  mysql_user:
+    name: 'web'
+    password: 'vagrant'
+    priv: '*.*:ALL,GRANT'
+    host: '10.10.1.11'
+    state: present
+
+- name: Create mysql user web 2
+  mysql_user:
+    name: 'web'
+    password: 'vagrant'
+    priv: '*.*:ALL,GRANT'
+    host: '10.10.1.12'
+    state: present
+  become: yes
+
+- name: Make mysql server listen on all interfaces
+  become: true
+  blockinfile:
+    path: /etc/mysql/my.cnf
+    block: |
+      [mysqld]
+      bind-address = *
+  notify: 
+    - restart mysql
