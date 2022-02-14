@@ -38,6 +38,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
     ansible.playbook = "roles/main.yml"
-    ansible.inventory_path = "hosts"
+    ansible.groups = {
+      "database" => ["database"],
+      "loadbalancer" => ["loadbalancer"],
+      "web" => ["web[1:#{WORKER_NBR}]"]
+    }
   end
 end

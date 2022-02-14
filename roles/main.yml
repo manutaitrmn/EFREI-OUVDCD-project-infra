@@ -11,4 +11,4 @@
 - hosts: web
   become: yes
   roles:
-    - { role: apache }
+    - { role: web }
