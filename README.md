@@ -1,1 +1,1 @@
-# k8s-simple-project
+# Devops simple project
