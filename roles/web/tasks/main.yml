@@ -87,3 +87,5 @@
   docker_container:
     name: fastapi
     image: fastapi-app:v1
+    ports:
+      - "80:80"
