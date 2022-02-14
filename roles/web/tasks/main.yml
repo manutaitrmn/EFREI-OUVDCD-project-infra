@@ -9,15 +9,10 @@
     - git
     - python3-pip
 
-- name: Install setup tools and force upgrade
+- name: Install setuptools module and force upgrade
   pip: 
     name: setuptools
     extra_args: --upgrade
-
-- name: Install hypercorn server
-  pip:
-    name:
-      - hypercorn
 
 - name: Clone FastAPI repo
   git:
@@ -31,4 +26,4 @@
     requirements: /devops-project-fastapi/requirements.txt
 
 - name: Run the hypercorn server
-  command: hypercorn /devops-project-fastapi/main:app --bind 0.0.0.0:80
+  shell: sudo hypercorn /devops-project-fastapi/main:app --bind 0.0.0.0:80 </dev/null >/dev/null 2>&1 &
