@@ -43,6 +43,6 @@ Vagrant.configure("2") do |config|
       "loadbalancer" => ["loadbalancer"],
       "web" => ["web[1:#{WEB_NBR}]"]
     }
-    ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
+    #ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
   end
 end
