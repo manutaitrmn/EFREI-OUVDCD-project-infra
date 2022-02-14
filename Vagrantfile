@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
     ansible.groups = {
       "database" => ["database"],
       "loadbalancer" => ["loadbalancer"],
-      "web" => ["web[1:#{WORKER_NBR}]"]
+      "web" => ["web[1:#{WEB_NBR}]"]
     }
   end
 end
