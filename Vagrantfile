@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
       web.vm.provision "ansible" do |ansible|
         ansible.verbose = true
         ansible.playbook = "roles/main.yml"
-        ansible.groups = {"web" => ["web"]}
+        ansible.groups = {"web" => ["web#{i}"]}
         ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3"}
       end
 
