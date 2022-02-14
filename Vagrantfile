@@ -1,4 +1,4 @@
-WEB_NBR = 2
+WEB_NBR = 1
 IMAGE_NAME = "debian/buster64"
 NODE_NETWORK_BASE = "10.10.1"
 
