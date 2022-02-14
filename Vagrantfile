@@ -14,6 +14,7 @@ Vagrant.configure("2") do |config|
       ansible.verbose = true
       ansible.playbook = "roles/main.yml"
       ansible.groups = {"database" => ["database"]}
+    end
   end
   
   # Loadbalancing VM 
@@ -25,6 +26,7 @@ Vagrant.configure("2") do |config|
       ansible.verbose = true
       ansible.playbook = "roles/main.yml"
       ansible.groups = {"loadbalancer" => ["loadbalancer"]}
+    end
   end
 
   (1..WEB_NBR).each do |i|
@@ -40,6 +42,7 @@ Vagrant.configure("2") do |config|
         ansible.playbook = "roles/main.yml"
         ansible.groups = {"web" => ["web"]}
         ansible.extra_vars = {ansible_python_interpreter:"/usr/bin/python3"}
+      end
 
       # Enable X Forwarding
       #web.ssh.forward_agent = true
