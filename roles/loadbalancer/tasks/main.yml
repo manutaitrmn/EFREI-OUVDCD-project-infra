@@ -1,14 +1,16 @@
 ---
 
 - name: Install required software
+  become: true
   apt:
     update_cache: yes
     state: latest
     name:
     - haproxy
-  become: yes
+  
   
 - name: Configure haproxy on layer 7
+  become: true
   blockinfile:
     path: /etc/haproxy/haproxy.cfg
     block: |
@@ -21,4 +23,3 @@
            server web2 10.10.1.12:80 check
   notify: 
     - restart haproxy
-  become: yes
